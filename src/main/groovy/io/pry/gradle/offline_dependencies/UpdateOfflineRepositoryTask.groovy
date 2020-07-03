@@ -32,8 +32,6 @@ import static io.pry.gradle.offline_dependencies.Utils.addToMultimap
 
 class UpdateOfflineRepositoryTask extends DefaultTask {
 
-    def EMPTY_DEPENDENCIES_ARRAY = new Dependency[0]
-
     @Input
     GString root
     @Input
@@ -127,7 +125,7 @@ class UpdateOfflineRepositoryTask extends DefaultTask {
                     // see:
                     // * http://stackoverflow.com/questions/29374885/multiple-version-of-dependencies-in-gradle
                     // * https://discuss.gradle.org/t/how-to-get-multiple-versions-of-the-same-library/7400
-                    def cfg = project.configurations.detachedConfiguration([dependency].toArray(EMPTY_DEPENDENCIES_ARRAY))
+                    def cfg = project.configurations.detachedConfiguration(dependency)
 
                     cfg.resolvedConfiguration.resolvedArtifacts.forEach({ artifact ->
                         def componentId = DefaultModuleComponentIdentifier.newId(DefaultModuleIdentifier.newId(artifact.moduleVersion.id.group, artifact.moduleVersion.id.name), artifact.moduleVersion.id.version)

@@ -25,19 +25,20 @@ class OfflineDependenciesPlugin implements Plugin<Project> {
                 project.services.get(CollectionCallbackActionDecorator.class) as CollectionCallbackActionDecorator
         )
 
-        def extension = project.extensions.create(EXTENSION_NAME, OfflineDependenciesExtension, repositoryHandler)
+        project.allprojects.each {proj ->
+            def extension = proj.extensions.create(EXTENSION_NAME, OfflineDependenciesExtension, repositoryHandler)
 
-        project.logger.info("Offline dependencies root configured at '${project.ext.offlineRepositoryRoot}'")
-
-        project.task('updateOfflineRepository', type: UpdateOfflineRepositoryTask) {
-            conventionMapping.root = { "${project.offlineRepositoryRoot}" }
-            conventionMapping.configurationNames = { extension.configurations }
-            conventionMapping.buildscriptConfigurationNames = { extension.buildScriptConfigurations }
-            conventionMapping.includeSources = { extension.includeSources }
-            conventionMapping.includeJavadocs = { extension.includeJavadocs }
-            conventionMapping.includePoms = { extension.includePoms }
-            conventionMapping.includeIvyXmls = { extension.includeIvyXmls }
-            conventionMapping.includeBuildscriptDependencies = { extension.includeBuildscriptDependencies }
+            project.logger.info("Offline dependencies root configured at '${project.ext.offlineRepositoryRoot}'")
+            proj.task('updateOfflineRepository', type: UpdateOfflineRepositoryTask) {
+                conventionMapping.root = { "${project.ext.offlineRepositoryRoot}" }
+                conventionMapping.configurationNames = { extension.configurations }
+                conventionMapping.buildscriptConfigurationNames = { extension.buildScriptConfigurations }
+                conventionMapping.includeSources = { extension.includeSources }
+                conventionMapping.includeJavadocs = { extension.includeJavadocs }
+                conventionMapping.includePoms = { extension.includePoms }
+                conventionMapping.includeIvyXmls = { extension.includeIvyXmls }
+                conventionMapping.includeBuildscriptDependencies = { extension.includeBuildscriptDependencies }
+            }
         }
     }
 }
